@@ -10,13 +10,23 @@ import {
 } from "@/components/ui/carousel"
 import axios from "axios"
 
-const Theater = () => {
-  const [movies, setMovies] = React.useState([])
+interface Movie {
+  id: number
+  title: string
+  poster_path: string
+}
+
+interface MovieResponse {
+  results: Movie[]
+}
+
+const Theater: React.FC = () => {
+  const [movies, setMovies] = React.useState<Movie[]>([])
 
   React.useEffect(() => {
     const fetchMoviesInTheaters = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.get<MovieResponse>(
           `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1&region=US`
         )
         setMovies(response.data.results.slice(0, 10))

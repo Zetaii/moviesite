@@ -10,13 +10,25 @@ import Link from "next/link"
 import React, { useEffect, useState } from "react"
 import axios from "axios"
 
-const TopMovies = () => {
-  const [movies, setMovies] = useState([])
+interface Movie {
+  id: number
+  title: string
+  backdrop_path: string
+  poster_path: string
+  overview: string
+}
+
+interface MovieResponse {
+  results: Movie[]
+}
+
+const TopMovies: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([])
 
   useEffect(() => {
     const fetchTopMovies = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.get<MovieResponse>(
           `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`
         )
         setMovies(response.data.results.slice(0, 10))

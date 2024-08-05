@@ -10,13 +10,23 @@ import {
 } from "@/components/ui/carousel"
 import axios from "axios"
 
-const TopTV = () => {
-  const [tvShows, setTvShows] = React.useState([])
+interface TVShow {
+  id: number
+  name: string
+  poster_path: string
+}
+
+interface TVShowResponse {
+  results: TVShow[]
+}
+
+const TopTV: React.FC = () => {
+  const [tvShows, setTvShows] = React.useState<TVShow[]>([])
 
   React.useEffect(() => {
     const fetchTrendingTVShows = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.get<TVShowResponse>(
           `https://api.themoviedb.org/3/trending/tv/week?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
         )
         setTvShows(response.data.results.slice(0, 10))

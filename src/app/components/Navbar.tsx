@@ -3,20 +3,30 @@ import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
 import axios from "axios"
 
-const Navbar = () => {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [suggestions, setSuggestions] = useState([])
-  const [showSuggestions, setShowSuggestions] = useState(false)
-  const searchRef = useRef(null)
+interface Movie {
+  id: number
+  title: string
+  poster_path: string
+}
 
-  const handleSearchChange = async (e) => {
+interface SearchResponse {
+  results: Movie[]
+}
+
+const Navbar: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState<string>("")
+  const [suggestions, setSuggestions] = useState<Movie[]>([])
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
+  const searchRef = useRef<HTMLDivElement>(null)
+
+  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchTerm(value)
     setShowSuggestions(true)
 
     if (value) {
       try {
-        const response = await axios.get(
+        const response = await axios.get<SearchResponse>(
           `https://api.themoviedb.org/3/search/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&query=${value}`
         )
         setSuggestions(response.data.results.slice(0, 5))
@@ -28,8 +38,11 @@ const Navbar = () => {
     }
   }
 
-  const handleClickOutside = (event) => {
-    if (searchRef.current && !searchRef.current.contains(event.target)) {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      searchRef.current &&
+      !searchRef.current.contains(event.target as Node)
+    ) {
       setShowSuggestions(false)
     }
   }

@@ -3,14 +3,25 @@ import React, { useEffect, useState } from "react"
 import axios from "axios"
 import Link from "next/link"
 
-const MoviePage = () => {
-  const [movies, setMovies] = useState([])
-  const [loading, setLoading] = useState(true)
+interface Movie {
+  id: number
+  title: string
+  poster_path: string
+  vote_average: number
+}
+
+interface MovieResponse {
+  results: Movie[]
+}
+
+const MoviePage: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.get<MovieResponse>(
           `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`
         )
         setMovies(response.data.results)
