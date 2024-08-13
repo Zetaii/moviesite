@@ -3,36 +3,36 @@ import React, { useEffect, useState } from "react"
 import axios from "axios"
 import Link from "next/link"
 
-interface Movie {
+interface TVShow {
   id: number
-  title: string
+  name: string
   poster_path: string
   vote_average: number
 }
 
-interface MovieResponse {
-  results: Movie[]
+interface TVResponse {
+  results: TVShow[]
 }
 
-const MoviePage: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>([])
+const TVPage: React.FC = () => {
+  const [shows, setShows] = useState<TVShow[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchTVShows = async () => {
       try {
-        const response = await axios.get<MovieResponse>(
-          `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`
+        const response = await axios.get<TVResponse>(
+          `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`
         )
-        setMovies(response.data.results)
+        setShows(response.data.results)
         setLoading(false)
       } catch (error) {
-        console.error("Error fetching movies:", error)
+        console.error("Error fetching TV shows:", error)
         setLoading(false)
       }
     }
 
-    fetchMovies()
+    fetchTVShows()
   }, [])
 
   if (loading) {
@@ -41,22 +41,22 @@ const MoviePage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-white">Popular Movies</h1>
+      <h1 className="text-3xl font-bold mb-6 text-white">Popular TV Shows</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {movies.map((movie) => (
-          <Link href={`/movie/${movie.id}`} key={movie.id}>
+        {shows.map((show) => (
+          <Link href={`/tv/${show.id}`} key={show.id}>
             <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
               <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
+                src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
+                alt={show.name}
                 className="w-full h-auto"
               />
               <div className="p-4">
                 <h2 className="text-lg font-semibold text-white mb-2 truncate">
-                  {movie.title}
+                  {show.name}
                 </h2>
                 <p className="text-sm text-gray-400">
-                  Rating: {movie.vote_average.toFixed(1)}
+                  Rating: {show.vote_average.toFixed(1)}
                 </p>
               </div>
             </div>
@@ -67,4 +67,4 @@ const MoviePage: React.FC = () => {
   )
 }
 
-export default MoviePage
+export default TVPage
