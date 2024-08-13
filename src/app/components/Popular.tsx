@@ -11,6 +11,14 @@ import {
 import Link from "next/link"
 import axios from "axios"
 import { Star } from "lucide-react"
+import { db, auth } from "../utils/firebase"
+import { collection, addDoc } from "firebase/firestore"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 interface Movie {
   id: number
@@ -30,7 +38,11 @@ interface MovieResponse {
   results: Movie[]
 }
 
-const Popular: React.FC = () => {
+interface PopularProps {
+  collections: any[]
+}
+
+const Popular: React.FC<PopularProps> = ({ collections }) => {
   const [movies, setMovies] = React.useState<Movie[]>([])
   const [genres, setGenres] = React.useState<Genre[]>([])
 
@@ -61,11 +73,43 @@ const Popular: React.FC = () => {
       .join(", ")
   }
 
+  const addToCollection = async (collectionId: string, movie: Movie) => {
+    const user = auth.currentUser
+    if (!user) {
+      console.error("User not signed in")
+      return
+    }
+
+    const movieData = {
+      mediaType: "movie",
+      title: movie.title,
+      releaseDate: movie.release_date,
+      genres: getGenreNames(movie.genre_ids),
+      rating: movie.vote_average,
+      poster: movie.poster_path,
+    }
+
+    try {
+      const collectionRef = collection(
+        db,
+        "users",
+        user.uid,
+        "collections",
+        collectionId,
+        "movies"
+      )
+      await addDoc(collectionRef, movieData)
+      console.log("Movie added to collection")
+    } catch (error) {
+      console.error("Error adding movie to collection:", error)
+    }
+  }
+
   return (
     <div className="w-full mx-auto mt-12 px-4 mb-12">
       <h2 className="text-2xl font-bold mb-4 text-white">Popular Movies</h2>
       <div className="relative">
-        <Carousel className="w-full">
+        <Carousel className="w-full relative h-[80vh]">
           <CarouselContent className="-ml-4">
             {movies.map((movie) => (
               <CarouselItem
@@ -73,7 +117,7 @@ const Popular: React.FC = () => {
                 className="pl-4 md:basis-1/2 lg:basis-1/5"
               >
                 <div className="p-1">
-                  <Card className="h-[66vh] bg-transparent border-none">
+                  <Card className="bg-transparent border-none h-full overflow-y-auto">
                     <CardContent className="flex flex-col h-full p-0">
                       <Link href={`/movies/${movie.id}`}>
                         <img
@@ -103,17 +147,41 @@ const Popular: React.FC = () => {
                         </p>
                       </div>
 
-                      <button className="w-full bg-blue-600 text-white text-sm py-2 rounded-b-lg hover:bg-blue-700">
-                        Add to Collection
-                      </button>
+                      <Accordion
+                        type="single"
+                        collapsible
+                        className="w-full bg-blue-600 rounded-b-xl"
+                      >
+                        <AccordionItem
+                          value="item-1"
+                          className="border-0 text-center"
+                        >
+                          <AccordionTrigger className="border-b-xl justify-center">
+                            Add to Collection
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            {collections.map((collection) => (
+                              <button
+                                key={collection.id}
+                                className="w-full bg-gray-200 text-black text-sm py-1 rounded-lg hover:bg-gray-300 mt-1"
+                                onClick={() =>
+                                  addToCollection(collection.id, movie)
+                                }
+                              >
+                                {collection.title}
+                              </button>
+                            ))}
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     </CardContent>
                   </Card>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2" />
-          <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2" />
+          <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 z-10" />
+          <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 z-10" />
         </Carousel>
       </div>
     </div>

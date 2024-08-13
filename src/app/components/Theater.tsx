@@ -19,6 +19,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { onAuthStateChanged } from "firebase/auth"
 
 interface Movie {
   id: number
@@ -63,15 +64,9 @@ const Theater: React.FC = () => {
       }
     }
 
-    const fetchCollections = async () => {
-      const user = auth.currentUser
-      if (!user) {
-        console.error("User not signed in")
-        return
-      }
-
+    const fetchCollections = async (userId: string) => {
       try {
-        const collectionRef = collection(db, "users", user.uid, "collections")
+        const collectionRef = collection(db, "users", userId, "collections")
         const querySnapshot = await getDocs(collectionRef)
         const userCollections = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -84,8 +79,18 @@ const Theater: React.FC = () => {
     }
 
     fetchMoviesInTheaters()
-    fetchCollections()
-  }, [])
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchCollections(user.uid)
+      } else {
+        setCollections([]) // Clear collections if user logs out
+      }
+    })
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe()
+  }, []) // Empty dependency array ensures this runs once on mount
 
   const getGenreNames = (genreIds: number[]) => {
     return genreIds
@@ -182,7 +187,7 @@ const Theater: React.FC = () => {
                           className="border-0 text-center"
                         >
                           <AccordionTrigger
-                            className="border-b-xl"
+                            className="border-b-xl justify-center"
                             onClick={() => toggleAccordion(movie.id)}
                           >
                             Add to Collection
