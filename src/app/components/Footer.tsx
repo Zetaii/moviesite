@@ -3,10 +3,9 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa"
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-12">
+    <footer className="bg-gray-900  text-white py-12 mt-60">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Quick Links */}
           <div>
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
@@ -38,7 +37,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Help & Support */}
           <div>
             <h3 className="text-xl font-bold mb-4">Help & Support</h3>
             <ul className="space-y-2">
@@ -65,7 +63,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social Media */}
           <div>
             <h3 className="text-xl font-bold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
@@ -84,7 +81,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Newsletter */}
           <div>
             <h3 className="text-xl font-bold mb-4">Newsletter</h3>
             <p className="mb-4">
@@ -107,7 +103,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Copyright */}
         <div className="mt-12 text-center">
           <p>
             &copy; {new Date().getFullYear()} MovieMania. All rights reserved.

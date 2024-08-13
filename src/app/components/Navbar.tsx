@@ -1,112 +1,102 @@
 "use client"
+import React, { useEffect, useState } from "react"
+import {
+  Clapperboard,
+  Film,
+  Hash,
+  Heart,
+  Home,
+  Layers,
+  Mail,
+  MessageCircleMore,
+  ScrollText,
+  Tv,
+} from "lucide-react"
 import Link from "next/link"
-import { useState, useRef, useEffect } from "react"
-import axios from "axios"
-
-interface Movie {
-  id: number
-  title: string
-  poster_path: string
-}
-
-interface SearchResponse {
-  results: Movie[]
-}
+import { auth } from "../utils/firebase"
+import { onAuthStateChanged, signOut, User } from "firebase/auth"
 
 const Navbar: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("")
-  const [suggestions, setSuggestions] = useState<Movie[]>([])
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
-  const searchRef = useRef<HTMLDivElement>(null)
-
-  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchTerm(value)
-    setShowSuggestions(true)
-
-    if (value) {
-      try {
-        const response = await axios.get<SearchResponse>(
-          `https://api.themoviedb.org/3/search/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&query=${value}`
-        )
-        setSuggestions(response.data.results.slice(0, 5))
-      } catch (error) {
-        console.error("Error fetching search results:", error)
-      }
-    } else {
-      setSuggestions([])
-    }
-  }
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      searchRef.current &&
-      !searchRef.current.contains(event.target as Node)
-    ) {
-      setShowSuggestions(false)
-    }
-  }
-
+  const [user, setUser] = useState<User | null>(null)
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser)
+    })
+
+    return () => unsubscribe()
   }, [])
 
-  return (
-    <div className="bg-slate-700 p-6">
-      <div className="flex items-center justify-between">
-        <div className="gap-6 flex items-center text-white">
-          <Link href="/" className="text-2xl font-semibold">
-            PvzMovies
-          </Link>
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      setUser(null)
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
+  }
 
-          <Link href={"/movies"} className="p-2 rounded hover:bg-slate-400">
-            Movies
-          </Link>
-          <Link href={"/tv"} className="p-2 rounded hover:bg-slate-400">
-            TV
-          </Link>
-        </div>
-        <div
-          className="relative flex items-center border-b-[1.5px] border-white p-1 flex-[0.5]"
-          ref={searchRef}
+  return (
+    <div className="sticky top-0 h-screen bg-slate-700 text-center">
+      <div className="flex flex-col gap-6 text-white items-center">
+        <Link
+          href="/"
+          className="text-lg font-semibold mt-6 border-b-2 border-t-2 p-2"
         >
-          <input
-            type="text"
-            className="bg-transparent outline-0 w-full pl-10 pr-4 py-1 text-white"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onFocus={() => setShowSuggestions(true)}
-          />
-          <img
-            src="/search.png"
-            alt="search"
-            className="absolute left-2 w-6 h-6"
-          />
-          {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute bg-slate-800 shadow-lg mt-1 w-96 overflow-y-auto z-10 top-full left-0 border border-gray-700">
-              {suggestions.map((movie) => (
-                <Link href={`/movie/${movie.id}`} key={movie.id}>
-                  <div className="flex items-center text-white p-2 border-b border-gray-700 hover:bg-gray-700 cursor-pointer">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                      className="w-24 h-24 mr-2 border-white border-2 rounded"
-                    />
-                    <span>{movie.title}</span>
-                  </div>
-                </Link>
-              ))}
-              <Link
-                href={`/search?query=${searchTerm}`}
-                className="flex items-center justify-center bg-slate-400 text-center p-2"
-              >
-                More Results
-              </Link>
-            </div>
+          PVZ
+        </Link>
+
+        <Link href="collections">
+          <div className="w-12 h-12 bg-gray-300 rounded-full mt-2 mb-2 hover:border-white hover:border-2">
+            <img
+              src="/user-1.png"
+              alt="User Avatar"
+              className="w-full h-full rounded-full object-cover"
+            />
+          </div>
+        </Link>
+
+        <Link href={"/"} className="p-2 rounded hover:bg-slate-400">
+          <Home />
+        </Link>
+        <Link href={"/collections"} className="p-2 rounded hover:bg-slate-400">
+          <Layers />
+        </Link>
+        <Link href={"/favorites"} className="p-2 rounded hover:bg-slate-400">
+          <Heart />
+        </Link>
+        <Link href={"/message"} className="p-2 rounded hover:bg-slate-400">
+          <MessageCircleMore />
+        </Link>
+
+        <Link href={"/movies"} className="p-2 rounded hover:bg-slate-400">
+          <Clapperboard />
+        </Link>
+        <Link href={"/tv"} className="p-2 rounded hover:bg-slate-400">
+          <Tv />
+        </Link>
+        <Link href={"/watchlist"} className="p-2 rounded hover:bg-slate-400">
+          <ScrollText />
+        </Link>
+
+        <Link href={"/genre"} className="p-2 rounded hover:bg-slate-400">
+          <Hash />
+        </Link>
+
+        <div className="flex flex-col gap-4 mt-4">
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded hover:bg-slate-400 text-white"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              href={"/login"}
+              className="p-2 rounded hover:bg-slate-400 text-white"
+            >
+              Login
+            </Link>
           )}
         </div>
       </div>

@@ -42,22 +42,23 @@ const TopMovies: React.FC = () => {
 
   return (
     <div>
-      <div className="w-[93vw]">
+      <div className="relative w-[95.8vw]">
+        {" "}
         <Carousel>
-          <CarouselPrevious />
-          <CarouselContent className="h-[75vh]">
+          <CarouselPrevious className="absolute left-10 top-1/2 transform -translate-y-1/2 z-10" />
+          <CarouselContent className="h-[95vh]">
             {movies.map((movie) => (
               <CarouselItem
                 key={movie.id}
                 style={{
-                  backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0, 1)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
+                  backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0, 0.75)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                   backgroundSize: "cover",
                 }}
               >
                 <div className="h-screen flex">
-                  <div className="absolute top-[200px] justify-evenly items-center w-[80vw] flex">
+                  <div className="absolute top-[200px] ml-20 justify-evenly items-center w-[80vw] flex">
                     <img
                       src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                       alt={movie.title}
@@ -70,7 +71,10 @@ const TopMovies: React.FC = () => {
                       </p>
                       <div className="flex items-center justify-end text-lg mt-6">
                         <div className="bg-cyan-800 rounded-md">
-                          <Link href={`/movie/${movie.id}`}>
+                          <Link
+                            href={`/movies/${movie.id}`}
+                            className="text-white"
+                          >
                             <button className="flex items-center hover:text-cyan-200 px-2 justify-center">
                               <img
                                 src="/playIcon.png"
@@ -81,7 +85,7 @@ const TopMovies: React.FC = () => {
                             </button>
                           </Link>
                         </div>
-                        <div className="ml-12">
+                        <div className="ml-12 text-white">
                           <button className="flex items-center hover:text-cyan-200 bg-red-900 p-2 rounded w-40 justify-center">
                             Reviews
                           </button>
@@ -93,7 +97,7 @@ const TopMovies: React.FC = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselNext />
+          <CarouselNext className="absolute right-10 top-1/2 transform -translate-y-1/2 z-10" />
         </Carousel>
       </div>
     </div>
