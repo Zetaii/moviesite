@@ -9,6 +9,7 @@ import Trending from "./Trending"
 import TopTV from "./TopTV"
 import Popular from "./Popular"
 import Theater from "./Theater"
+import SearchBar from "./SearchBar" // Import the SearchBar component
 
 const Hero: React.FC = () => {
   const [collections, setCollections] = useState<any[]>([])
@@ -40,16 +41,16 @@ const Hero: React.FC = () => {
   }, [])
 
   return (
-    <div className="w-[95.8vw] h-full bg-sky-950 flex flex-col">
+    <div className="w-full h-full bg-sky-950 flex flex-col items-center px-4 py-8 space-y-8">
+      <SearchBar />
       <TopMovies />
       <Theater />
       <TopTV collections={collections} />
       <Trending collections={collections} />
       <Popular collections={collections} />
-
       <div className="flex justify-center mt-4 mb-12">
         <Link href="/movies">
-          <button className="bg-transparent border-slate-200 border-2 text-white px-6 py-2 rounded hover:bg-blue-700">
+          <button className="bg-transparent border-slate-200 border-2 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors duration-300">
             See More
           </button>
         </Link>

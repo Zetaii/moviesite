@@ -1,4 +1,5 @@
-import type { Metadata } from "next"
+import React from "react"
+import { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import Navbar from "./components/Navbar"
@@ -14,21 +15,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-slate-900`}>
-        {" "}
-        {/* Add bg-slate-800 here */}
-        <div className="flex">
-          <div className="w-16">
-            <Navbar />
-          </div>
-          <div className="flex-1">
+      <body className={`${inter.className} bg-sky-950`}>
+        <div className="flex min-h-screen">
+          <Navbar className="w-64 bg-slate-800 text-white fixed top-0 left-0 h-full" />
+          <div className="flex-1 flex flex-col ml-24">
             <SearchBar />
-            {children}
+            <main className="flex-1 overflow-y-auto mt-16">
+              {children}
+            </main>{" "}
             <Footer />
           </div>
         </div>

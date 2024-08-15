@@ -2,15 +2,14 @@
 import React, { useEffect, useState } from "react"
 import {
   Clapperboard,
-  Film,
   Hash,
   Heart,
   Home,
   Layers,
-  Mail,
   MessageCircleMore,
   ScrollText,
   Tv,
+  Menu,
 } from "lucide-react"
 import Link from "next/link"
 import { auth } from "../utils/firebase"
@@ -18,6 +17,8 @@ import { onAuthStateChanged, signOut, User } from "firebase/auth"
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState<User | null>(null)
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
@@ -35,18 +36,26 @@ const Navbar: React.FC = () => {
     }
   }
 
+  const toggleNavbar = () => {
+    setIsCollapsed(!isCollapsed)
+  }
+
   return (
-    <div className="sticky top-0 h-screen bg-slate-700 text-center">
-      <div className="flex flex-col gap-6 text-white items-center">
-        <Link
-          href="/"
-          className="text-lg font-semibold mt-6 border-b-2 border-t-2 p-2"
+    <div className="sticky top-0 h-screen bg-slate-800 text-center z-50 shadow-lg">
+      <div className="flex items-center justify-between p-4 border-b border-gray-600">
+        <button
+          onClick={toggleNavbar}
+          className="text-white p-2 focus:outline-none hover:bg-slate-600 rounded"
         >
+          <Menu className="w-6 h-6" />
+        </button>
+        <Link href="/" className="text-xl font-bold text-white">
           PVZ
         </Link>
-
+      </div>
+      <div className="flex flex-col gap-4 text-white items-center mt-4">
         <Link href="collections">
-          <div className="w-12 h-12 bg-gray-300 rounded-full mt-2 mb-2 hover:border-white hover:border-2">
+          <div className="w-14 h-14 bg-gray-500 rounded-full mt-2 mb-2 hover:border-white hover:border-2 transition-all duration-300">
             <img
               src="/user-1.png"
               alt="User Avatar"
@@ -55,45 +64,67 @@ const Navbar: React.FC = () => {
           </div>
         </Link>
 
-        <Link href={"/"} className="p-2 rounded hover:bg-slate-400">
-          <Home />
-        </Link>
-        <Link href={"/collections"} className="p-2 rounded hover:bg-slate-400">
-          <Layers />
-        </Link>
-        <Link href={"/favorites"} className="p-2 rounded hover:bg-slate-400">
-          <Heart />
-        </Link>
-        <Link href={"/message"} className="p-2 rounded hover:bg-slate-400">
-          <MessageCircleMore />
-        </Link>
-
-        <Link href={"/movies"} className="p-2 rounded hover:bg-slate-400">
-          <Clapperboard />
-        </Link>
-        <Link href={"/tv"} className="p-2 rounded hover:bg-slate-400">
-          <Tv />
-        </Link>
-        <Link href={"/watchlist"} className="p-2 rounded hover:bg-slate-400">
-          <ScrollText />
-        </Link>
-
-        <Link href={"/genre"} className="p-2 rounded hover:bg-slate-400">
-          <Hash />
-        </Link>
+        <NavItem
+          href="/"
+          icon={<Home className="w-6 h-6" />}
+          label="Home"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          href="/collections"
+          icon={<Layers className="w-6 h-6" />}
+          label="Collections"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          href="/favorites"
+          icon={<Heart className="w-6 h-6" />}
+          label="Favorites"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          href="/message"
+          icon={<MessageCircleMore className="w-6 h-6" />}
+          label="Message"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          href="/movies"
+          icon={<Clapperboard className="w-6 h-6" />}
+          label="Movies"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          href="/tv"
+          icon={<Tv className="w-6 h-6" />}
+          label="TV"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          href="/watchlist"
+          icon={<ScrollText className="w-6 h-6" />}
+          label="Watchlist"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          href="/genre"
+          icon={<Hash className="w-6 h-6" />}
+          label="Genre"
+          isCollapsed={isCollapsed}
+        />
 
         <div className="flex flex-col gap-4 mt-4">
           {user ? (
             <button
               onClick={handleLogout}
-              className="p-2 rounded hover:bg-slate-400 text-white"
+              className="p-2 rounded hover:bg-slate-600 text-white transition-all duration-300"
             >
               Logout
             </button>
           ) : (
             <Link
-              href={"/login"}
-              className="p-2 rounded hover:bg-slate-400 text-white"
+              href="/login"
+              className="p-2 rounded hover:bg-slate-600 text-white transition-all duration-300"
             >
               Login
             </Link>
@@ -103,5 +134,29 @@ const Navbar: React.FC = () => {
     </div>
   )
 }
+
+interface NavItemProps {
+  href: string
+  icon: React.ReactNode
+  label: string
+  isCollapsed: boolean
+}
+
+const NavItem: React.FC<NavItemProps> = ({
+  href,
+  icon,
+  label,
+  isCollapsed,
+}) => (
+  <Link
+    href={href}
+    className={`flex ${
+      isCollapsed ? "w-14 h-14 justify-center" : "w-48 justify-start"
+    } p-2 rounded hover:bg-slate-600 items-center transition-all duration-300`}
+  >
+    {icon}
+    {!isCollapsed && <span className="ml-4">{label}</span>}
+  </Link>
+)
 
 export default Navbar

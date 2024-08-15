@@ -41,63 +41,56 @@ const TopMovies: React.FC = () => {
   }, [])
 
   return (
-    <div>
-      <div className="relative w-[95.8vw]">
-        {" "}
+    <div className="flex items-center justify-center mt-8">
+      <div className="relative w-full max-w-screen-xl">
         <Carousel>
-          <CarouselPrevious className="absolute left-10 top-1/2 transform -translate-y-1/2 z-10" />
-          <CarouselContent className="h-[95vh]">
+          <CarouselPrevious className="absolute left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 bg-opacity-75 p-3 rounded-full hover:bg-opacity-100 transition duration-300" />
+          <CarouselContent className="h-[70vh] md:h-[80vh] lg:h-[90vh]">
             {movies.map((movie) => (
               <CarouselItem
                 key={movie.id}
+                className="flex items-center justify-center"
                 style={{
-                  backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0, 0.75)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
+                  backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0, 0.8)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                   backgroundSize: "cover",
                 }}
               >
-                <div className="h-screen flex">
-                  <div className="absolute top-[200px] ml-20 justify-evenly items-center w-[80vw] flex">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                      className="w-[300px] h-full rounded-lg border-white/45 border-2"
-                    />
-                    <div className="items-center flex flex-col">
-                      <h4 className="text-white text-2xl">{movie.title}</h4>
-                      <p className="text-white text-lg mt-2">
-                        {movie.overview}
-                      </p>
-                      <div className="flex items-center justify-end text-lg mt-6">
-                        <div className="bg-cyan-800 rounded-md">
-                          <Link
-                            href={`/movies/${movie.id}`}
-                            className="text-white"
-                          >
-                            <button className="flex items-center hover:text-cyan-200 px-2 justify-center">
-                              <img
-                                src="/playIcon.png"
-                                className="w-12 h-12"
-                                alt="Play Icon"
-                              />
-                              More Info
-                            </button>
-                          </Link>
-                        </div>
-                        <div className="ml-12 text-white">
-                          <button className="flex items-center hover:text-cyan-200 bg-red-900 p-2 rounded w-40 justify-center">
-                            Reviews
-                          </button>
-                        </div>
-                      </div>
+                <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-screen-lg space-y-6 md:space-y-0 md:space-x-8 px-4 md:px-8 lg:px-16 py-8">
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt={movie.title}
+                    className="w-48 md:w-64 lg:w-80 h-auto rounded-lg border-white/50 border-2 shadow-lg"
+                  />
+                  <div className="text-center md:text-left max-w-md">
+                    <h4 className="text-white text-2xl md:text-3xl lg:text-4xl font-bold">
+                      {movie.title}
+                    </h4>
+                    <p className="text-white text-sm md:text-base lg:text-lg mt-2">
+                      {movie.overview}
+                    </p>
+                    <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start mt-6 space-y-4 md:space-y-0 md:space-x-4">
+                      <Link href={`/movies/${movie.id}`}>
+                        <button className="flex items-center bg-cyan-800 hover:bg-cyan-700 px-4 py-2 rounded-md text-white transition duration-300">
+                          <img
+                            src="/playIcon.png"
+                            className="w-8 h-8 mr-2"
+                            alt="Play Icon"
+                          />
+                          More Info
+                        </button>
+                      </Link>
+                      <button className="flex items-center bg-red-900 hover:bg-red-800 px-4 py-2 rounded-md text-white transition duration-300">
+                        Reviews
+                      </button>
                     </div>
                   </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselNext className="absolute right-10 top-1/2 transform -translate-y-1/2 z-10" />
+          <CarouselNext className="absolute right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 bg-opacity-75 p-3 rounded-full hover:bg-opacity-100 transition duration-300" />
         </Carousel>
       </div>
     </div>

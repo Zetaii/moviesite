@@ -156,7 +156,7 @@ const Popular: React.FC<PopularProps> = ({ collections }) => {
                           value="item-1"
                           className="border-0 text-center"
                         >
-                          <AccordionTrigger className="border-b-xl justify-center">
+                          <AccordionTrigger className="border-b-xl justify-center text-white">
                             Add to Collection
                           </AccordionTrigger>
                           <AccordionContent>

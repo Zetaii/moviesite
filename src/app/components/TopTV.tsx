@@ -106,7 +106,7 @@ const TopTV: React.FC<TopTVProps> = ({ collections }) => {
   }
 
   return (
-    <div className="w-full mx-auto mt-12 px-4">
+    <div className="w-full mx-auto mt-12 px-4 border-b-2 border-gray-400">
       <h2 className="text-2xl font-bold mb-4 text-white">Trending TV Shows</h2>
       <div className="relative">
         <Carousel className="w-full relative h-[80vh]">
@@ -156,7 +156,7 @@ const TopTV: React.FC<TopTVProps> = ({ collections }) => {
                           value="item-1"
                           className="border-0 text-center"
                         >
-                          <AccordionTrigger className="border-b-xl justify-center items-center">
+                          <AccordionTrigger className="border-b-xl justify-center items-center text-white">
                             Add to Collection
                           </AccordionTrigger>
                           <AccordionContent>

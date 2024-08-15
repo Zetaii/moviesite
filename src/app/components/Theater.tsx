@@ -136,8 +136,8 @@ const Theater: React.FC = () => {
   }
 
   return (
-    <div className="w-full mx-auto mt-12 px-4">
-      <h2 className="text-2xl font-bold mb-4 text-white">In Theaters</h2>
+    <div className="w-full mx-auto mt-12 px-4 border-b-2 border-gray-500 border-t-2">
+      <h2 className="text-2xl font-bold mb-4 mt-4 text-white">In Theaters</h2>
       <div className="relative">
         <Carousel className="w-full relative h-[80vh]">
           <CarouselContent className="-ml-4">
@@ -187,7 +187,7 @@ const Theater: React.FC = () => {
                           className="border-0 text-center"
                         >
                           <AccordionTrigger
-                            className="border-b-xl justify-center"
+                            className="border-b-xl justify-center text-white"
                             onClick={() => toggleAccordion(movie.id)}
                           >
                             Add to Collection
